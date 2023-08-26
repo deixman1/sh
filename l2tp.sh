@@ -20,26 +20,11 @@ check_vz() {
   fi
 }
 
-check_iptables() {
-  if [ -x /sbin/iptables ] && ! iptables -nL INPUT >/dev/null 2>&1; then
-    exiterr "IPTables check failed. Reboot and re-run this script."
-  fi
-} 
-
- # Update repository
-  conf_bk "/etc/apt/sources.list"
-cat > /etc/apt/sources.list <<EOF
-
-deb http://archive.ubuntu.com/ubuntu focal main restricted
-deb http://archive.ubuntu.com/ubuntu focal-updates main restricted
-deb http://archive.ubuntu.com/ubuntu focal universe
-deb http://archive.ubuntu.com/ubuntu focal-updates universe
-deb http://archive.ubuntu.com/ubuntu focal multiverse
-deb http://archive.ubuntu.com/ubuntu focal-updates multiverse
-deb http://archive.ubuntu.com/ubuntu focal-backports main restricted universe multiverse
-deb http://archive.ubuntu.com/ubuntu focal-security main restricted
-deb http://archive.ubuntu.com/ubuntu focal-security universe
-EOF
+#check_iptables() {
+#  if [ -x /sbin/iptables ] && ! iptables -nL INPUT >/dev/null 2>&1; then
+#    exiterr "IPTables check failed. Reboot and re-run this script."
+#  fi
+#} 
 
 echo "apt-get update"
 apt-get update
@@ -169,12 +154,12 @@ cat > /etc/sysctl.d/99-sysctl.conf<<EOF
 net.ipv4.ip_forward=1
 EOF
 
-iptables -t nat -A POSTROUTING -o ens3 -j MASQUERADE
-iptables -t nat -A POSTROUTING -o enp0s3 -j MASQUERADE
+#iptables -t nat -A POSTROUTING -o ens3 -j MASQUERADE
+#iptables -t nat -A POSTROUTING -o enp0s3 -j MASQUERADE
 
 sysctl -p /etc/sysctl.d/99-sysctl.conf
 
-apt install -y iptables-persistent
+#apt install -y iptables-persistent
 
 systemctl restart strongswan-starter
 systemctl restart xl2tpd
